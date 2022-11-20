@@ -13,23 +13,25 @@ inputRef.addEventListener('input', debounce(onSearch, DEBOUNCE_DELAY));
 
 function onSearch(evt) {
   const searchedCountry = evt.target.value.trim();
-
-  fetchCountries(searchedCountry)
-    .then(resp => {
-      console.log(resp);
-      if (resp.length >= 2 && resp.length <= 10) {
-        createMarkup(resp);
-      }
-      if (resp.length > 10) {
-        Notify.info(
-          'Too many matches found. Please enter a more specific name.'
-        );
-      }
-      if (resp.length === 1) {
-        getCountryInfo(resp);
-      }
-    })
-    .catch(err => Notify.failure('Oops, there is no country with that name'));
+  if (searchedCountry) {
+    fetchCountries(searchedCountry)
+      .then(resp => {
+        console.log(resp);
+        if (resp.length >= 2 && resp.length <= 10) {
+          createMarkup(resp);
+        }
+        if (resp.length > 10) {
+          Notify.info(
+            'Too many matches found. Please enter a more specific name.'
+          );
+        }
+        if (resp.length === 1) {
+          getCountryInfo(resp);
+        }
+      })
+      .catch(err => Notify.failure('Oops, there is no country with that name'));
+  }
+  clearHTML();
 }
 
 function createMarkup(arr) {
@@ -65,4 +67,8 @@ function getCountryInfo(arr) {
     .join('');
   listRef.innerHTML = '';
   countryRef.innerHTML = template;
+}
+function clearHTML() {
+  listRef.innerHTML = '';
+  countryRef.innerHTML = '';
 }
